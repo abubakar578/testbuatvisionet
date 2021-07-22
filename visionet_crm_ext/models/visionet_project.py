@@ -45,7 +45,7 @@ class VisionetTarget(models.Model):
     start_date = fields.Date(string='Start Date')
     end_date = fields.Date(string='End Date')
     target = fields.Integer(string="Target")
-    total_achievement = fields.Integer(string="Achievement", compute="_total_achievement", tracking=True)
+    total_achievement = fields.Integer(string="Achievement", compute="_total_achievement", tracking=True, store=True)
 
     def _total_achievement(self):
         for record in self:

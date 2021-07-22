@@ -99,8 +99,18 @@
         <record id="visionet_crm_calendar_fullaccess" model="ir.rule">
             <field name="name">Member, memiliki seluruh akses kontak sendiri</field>
             <field name="model_id" ref="base.model_res_partner"/>
-            <field name="domain_force">['|', ('user_id','=',user.id), ('user_ids','!=',False)]</field>
+            <field name="domain_force">['|', '|', ('user_id','=',user.id), ('user_ids','!=',False), ('user_id','=', False)]</field>
             <field name="groups" eval="[(4, ref('visionet_crm_ext.group_no_member'))]"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_read" eval="1"/>
+        </record>
+
+        <record id="visionet_crm_calendar_leadteam" model="ir.rule">
+            <field name="name">Lead Team, memiliki seluruh akses kontak sendiri</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="domain_force">['|', '|', ('user_id','in', user.team_member_ids.ids), ('user_ids','!=',False), ('user_id','=', False)]</field>
             <field name="perm_create" eval="1"/>
             <field name="perm_write" eval="1"/>
             <field name="perm_unlink" eval="1"/>
