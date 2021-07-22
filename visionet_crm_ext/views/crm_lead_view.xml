@@ -39,9 +39,10 @@
             <xpath expr="//group[@name='opportunity_partner']/field[@name='partner_id']" position="attributes">
                 <attribute name="domain">[('is_employee', '=', False)]</attribute>
                 <attribute name="required">1</attribute>
+                <attribute name="context">{'default_is_employee': False}</attribute>
             </xpath>
             <xpath expr="//group[@name='opportunity_partner']/field[@name='partner_id']" position="after">
-                <field name="end_user" domain="[('is_employee','=', False)]"/>
+                <field name="end_user" domain="[('is_employee','=', False)]" context="{'default_is_employee': False}"/>
             </xpath>
 
             <xpath expr="//group[@name='opportunity_partner']/label[@for='email_from']" position="replace"/>
