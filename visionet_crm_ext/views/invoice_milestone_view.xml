@@ -1,0 +1,44 @@
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="revenue_analysis_pivot">
+            <field name="name">fal.invoice.term.line</field>
+            <field name="model">fal.invoice.term.line</field>
+            <field name="arch" type="xml">
+                <pivot string="Revenue Analysis">
+                    <field name="rel_name"/> 
+                    <field name="rel_expected_revenue"/>
+                    <field name="rel_probability"/> 
+                    <field name="rel_prorated_revenue"/>
+                    <field name="rel_partner_id"/> 
+                    <field name="rel_end_user"/>
+                    <field name="rel_date_deadline"/> 
+                    <field name="rel_start_date"/>
+                    <field name="rel_product"/> 
+                    <field name="rel_vis_probability"/>
+                    <field name="rel_stage_crm"/> 
+                    <field name="rel_project_id"/>
+                    <field name="rel_recuring"/>
+                    <field name="rel_contract_period"/> 
+                    <field name="rel_vis_probability"/>
+                    <field name="rel_bill_period"/> 
+                    <field name="rel_user_id"/>
+                    <field name="rel_team_id"/>
+                    <field name="rel_presales"/> 
+                    <field name="rel_product_department"/>
+                </pivot>
+            </field>
+        </record>
+
+        <record id="revenue_Action" model="ir.actions.act_window">
+            <field name="name">Revenue Analysis</field>
+            <field name="res_model">fal.invoice.term.line</field>
+            <field name="view_mode">pivot</field>
+            <field name="help">This is revenue report</field>
+            <field name="domain">[('rel_stage_crm', '!=', False)]</field>
+        </record>
+
+    <menuitem id="revenue_reports" name="Revenue" parent="crm.crm_menu_report" sequence="3" action="revenue_Action"/>
+    
+    </data>
+</odoo>
+<!-- Buat pivot revenue -->

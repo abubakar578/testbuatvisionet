@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="visionet_crm_user_target_form" model="ir.ui.view">
+            <field name="name">visionet.crm.user.target.form</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_simple_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='phone_numbers']/field[@name='mobile']" position="after">
+                    <field name="visionet_target_ids">
+                        <tree editable="bottom">
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="target"/>
+                            <field name="total_achievement"/>
+                        </tree>
+                    </field>
+                    <field name="total_target" widget="monetary"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

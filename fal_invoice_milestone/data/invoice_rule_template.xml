@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="add_product" model="product.product">
+            <field name="name">Milestone</field>
+            <field name="default_code">Milestone</field>
+            <field name="categ_id" ref="product.product_category_1"/>
+            <field name="type">service</field>
+            <field name="list_price">0.0</field>
+            <field name="invoice_policy">order</field>
+            <field name="standard_price">0.0</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="company_id" eval="[]"/>
+            <field name="image_1920" type="base64" file="sale/static/img/advance_product_0-image.jpg"/>
+            <field name="taxes_id" eval="[]"/>
+            <field name="supplier_taxes_id" eval="[]"/>
+        </record>
+
+        <record id="fal_invoice_rule_1" model="fal.invoice.term">
+            <field name="name">Half Invoice Rule</field>
+            <field name="is_template" eval="True"/>
+            <field name="fal_invoice_rules">milestone</field>
+            <field name="fal_invoice_rules_type">percentage</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="fal_invoice_rule_2" model="fal.invoice.term">
+            <field name="name">3 Step Invoice Rule</field>
+            <field name="is_template" eval="True"/>
+            <field name="fal_invoice_rules">milestone</field>
+            <field name="fal_invoice_rules_type">percentage</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+         <record id="fal_invoice_rule_line_1" model="fal.invoice.term.line" >
+            <field ref="fal_invoice_rule_1" name="fal_invoice_term_id"/>
+            <field name="is_template" eval="True"/>
+            <field name="description">Order</field>
+            <field name="percentage">50</field>
+            <field name="product_id" ref="add_product"/>
+        </record>
+
+        <record id="fal_invoice_rule_line_2" model="fal.invoice.term.line" >
+            <field ref="fal_invoice_rule_1" name="fal_invoice_term_id"/>
+            <field name="is_template" eval="True"/>
+            <field name="description">End Of Project</field>
+            <field name="percentage">50</field>
+            <field name="product_id" ref="add_product"/>
+        </record>
+
+
+         <record id="fal_invoice_rule_line_3" model="fal.invoice.term.line" >
+            <field ref="fal_invoice_rule_2" name="fal_invoice_term_id"/>
+            <field name="is_template" eval="True"/>
+            <field name="description">Order</field>
+            <field name="percentage">50</field>
+            <field name="product_id" ref="add_product"/>
+        </record>
+
+        <record id="fal_invoice_rule_line_4" model="fal.invoice.term.line" >
+            <field ref="fal_invoice_rule_2" name="fal_invoice_term_id"/>
+            <field name="is_template" eval="True"/>
+            <field name="description">End Of Project</field>
+            <field name="percentage">40</field>
+            <field name="product_id" ref="add_product"/>
+        </record>
+
+        <record id="fal_invoice_rule_line_5" model="fal.invoice.term.line" >
+            <field ref="fal_invoice_rule_2" name="fal_invoice_term_id"/>
+            <field name="is_template" eval="True"/>
+            <field name="description">After One Month</field>
+            <field name="percentage">10</field>
+            <field name="product_id" ref="add_product"/>
+        </record>
+
+        <!-- subcription -->
+        <record id="fal_invoice_rule_3" model="fal.invoice.term">
+            <field name="name">Subscription During on 12 Month</field>
+            <field name="is_template" eval="True"/>
+            <field name="fal_invoice_rules">subscription</field>
+            <field name="recurring_interval">1</field>
+            <field name="recurring_rule_count">12</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="fal_invoice_rule_subscription_1" model="fal.invoice.term.line" >
+            <field ref="fal_invoice_rule_3" name="fal_invoice_term_id"/>
+            <field name="is_template" eval="True"/>
+            <field name="percentage">0</field>
+        </record>
+        <record id="fal_invoice_rule_subscription_2" model="fal.invoice.term.line" >
+            <field ref="fal_invoice_rule_3" name="fal_invoice_term_id"/>
+            <field name="is_template" eval="True"/>
+            <field name="percentage">0</field>
+        </record>
+        <record id="fal_invoice_rule_subscription_3" model="fal.invoice.term.line" >
+            <field ref="fal_invoice_rule_3" name="fal_invoice_term_id"/>
+            <field name="is_template" eval="True"/>
+            <field name="percentage">0</field>
+        </record>
+        <record id="fal_invoice_rule_subscription_4" model="fal.invoice.term.line" >
+            <field ref="fal_invoice_rule_3" name="fal_invoice_term_id"/>
+            <field name="is_template" eval="True"/>
+            <field name="percentage">0</field>
+        </record>
+        <record id="fal_invoice_rule_subscription_5" model="fal.invoice.term.line" >
+            <field ref="fal_invoice_rule_3" name="fal_invoice_term_id"/>
+            <field name="is_template" eval="True"/>
+            <field name="percentage">0</field>
+        </record>
+        <record id="fal_invoice_rule_subscription_6" model="fal.invoice.term.line" >
+            <field ref="fal_invoice_rule_3" name="fal_invoice_term_id"/>
+            <field name="is_template" eval="True"/>
+            <field name="percentage">0</field>
+        </record>
+        <record id="fal_invoice_rule_subscription_7" model="fal.invoice.term.line" >
+            <field ref="fal_invoice_rule_3" name="fal_invoice_term_id"/>
+            <field name="is_template" eval="True"/>
+            <field name="percentage">0</field>
+        </record>
+        <record id="fal_invoice_rule_subscription_8" model="fal.invoice.term.line" >
+            <field ref="fal_invoice_rule_3" name="fal_invoice_term_id"/>
+            <field name="is_template" eval="True"/>
+            <field name="percentage">0</field>
+        </record>
+        <record id="fal_invoice_rule_subscription_9" model="fal.invoice.term.line" >
+            <field ref="fal_invoice_rule_3" name="fal_invoice_term_id"/>
+            <field name="is_template" eval="True"/>
+            <field name="percentage">0</field>
+        </record>
+        <record id="fal_invoice_rule_subscription_10" model="fal.invoice.term.line" >
+            <field ref="fal_invoice_rule_3" name="fal_invoice_term_id"/>
+            <field name="is_template" eval="True"/>
+            <field name="percentage">0</field>
+        </record>
+        <record id="fal_invoice_rule_subscription_11" model="fal.invoice.term.line" >
+            <field ref="fal_invoice_rule_3" name="fal_invoice_term_id"/>
+            <field name="is_template" eval="True"/>
+            <field name="percentage">0</field>
+        </record>
+        <record id="fal_invoice_rule_subscription_12" model="fal.invoice.term.line" >
+            <field ref="fal_invoice_rule_3" name="fal_invoice_term_id"/>
+            <field name="is_template" eval="True"/>
+            <field name="percentage">0</field>
+        </record>
+
+
+
+        <record id="fal_invoice_rule_4" model="fal.invoice.term">
+            <field name="name">Subscription During on 6 Month</field>
+            <field name="is_template" eval="True"/>
+            <field name="fal_invoice_rules">subscription</field>
+            <field name="recurring_interval">1</field>
+            <field name="recurring_rule_count">6</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="fal_invoice_rule_subscription_4_1" model="fal.invoice.term.line" >
+            <field ref="fal_invoice_rule_4" name="fal_invoice_term_id"/>
+            <field name="is_template" eval="True"/>
+            <field name="percentage">0</field>
+        </record>
+        <record id="fal_invoice_rule_subscription_4_2" model="fal.invoice.term.line" >
+            <field ref="fal_invoice_rule_4" name="fal_invoice_term_id"/>
+            <field name="is_template" eval="True"/>
+            <field name="percentage">0</field>
+        </record>
+        <record id="fal_invoice_rule_subscription_4_3" model="fal.invoice.term.line" >
+            <field ref="fal_invoice_rule_4" name="fal_invoice_term_id"/>
+            <field name="is_template" eval="True"/>
+            <field name="percentage">0</field>
+        </record>
+        <record id="fal_invoice_rule_subscription_4_4" model="fal.invoice.term.line" >
+            <field ref="fal_invoice_rule_4" name="fal_invoice_term_id"/>
+            <field name="is_template" eval="True"/>
+            <field name="percentage">0</field>
+        </record>
+        <record id="fal_invoice_rule_subscription_4_5" model="fal.invoice.term.line" >
+            <field ref="fal_invoice_rule_4" name="fal_invoice_term_id"/>
+            <field name="is_template" eval="True"/>
+            <field name="percentage">0</field>
+        </record>
+        <record id="fal_invoice_rule_subscription_4_6" model="fal.invoice.term.line" >
+            <field ref="fal_invoice_rule_4" name="fal_invoice_term_id"/>
+            <field name="is_template" eval="True"/>
+            <field name="percentage">0</field>
+        </record>
+
+        <record id="fal_invoice_rule_5" model="fal.invoice.term">
+            <field name="name">Subscription Quarterly During on 12 Month</field>
+            <field name="is_template" eval="True"/>
+            <field name="fal_invoice_rules">subscription</field>
+            <field name="recurring_interval">3</field>
+            <field name="recurring_rule_count">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="fal_invoice_rule_subscription_5_1" model="fal.invoice.term.line" >
+            <field ref="fal_invoice_rule_5" name="fal_invoice_term_id"/>
+            <field name="is_template" eval="True"/>
+            <field name="percentage">0</field>
+        </record>
+        <record id="fal_invoice_rule_subscription_5_2" model="fal.invoice.term.line" >
+            <field ref="fal_invoice_rule_5" name="fal_invoice_term_id"/>
+            <field name="is_template" eval="True"/>
+            <field name="percentage">0</field>
+        </record>
+        <record id="fal_invoice_rule_subscription_5_3" model="fal.invoice.term.line" >
+            <field ref="fal_invoice_rule_5" name="fal_invoice_term_id"/>
+            <field name="is_template" eval="True"/>
+            <field name="percentage">0</field>
+        </record>
+    </data>
+</odoo>

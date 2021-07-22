@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="fal_sales_config_settings_view_form_config_milestone" model="ir.ui.view">
+            <field name="name">fal.res.config.settings.view.form.config.milestone</field>
+            <field name="model">res.config.settings</field>
+            <field name="priority" eval="0"/>
+            <field name="inherit_id" ref="sale.res_config_settings_view_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//div[@id='sales_settings_invoicing_policy']" position="after">
+                    <div class="col-xs-12 col-md-6 o_setting_box">
+                        <div class="o_setting_left_pane">
+                            <field name="fal_active_milestone_cron"/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="fal_active_milestone_cron"/>
+                            <span class="badge badge-primary oe_inline" style="background-color:#6CBF84">CLuedoo</span>
+                            <div class="text-muted">
+                                Active automatic scheduled actions for milestone
+                            </div>
+                        </div>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+        <record id="fal_partner_invoice_term" model="ir.ui.view">
+            <field name="name">fal.partner.invoice.term</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form/sheet/group/group[2]/field[@name='website']" position="after">
+                    <field name="fal_partner_invoice_term"/>
+               </xpath>
+           </field>
+       </record>
+    </data>
+</odoo>

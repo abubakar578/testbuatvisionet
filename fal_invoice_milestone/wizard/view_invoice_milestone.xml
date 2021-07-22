@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="calendar_event_warning_wizard_form" model="ir.ui.view">
+            <field name="name">invoice.milestone.wizard</field>
+            <field name="model">invoice.milestone.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Invoice Milestone">
+                    <group>
+                        <field name="fal_template_id"/>
+                    </group>
+                    <footer>
+                        <button name="create_invoices_rule_view" string="Create and View Invoice Rule" type="object"/>
+                        <button name="create_invoices_rule" string="Create Rule" type="object"/>
+                        <!-- <button string="Cancel" class="btn-default" special="cancel"/> -->
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

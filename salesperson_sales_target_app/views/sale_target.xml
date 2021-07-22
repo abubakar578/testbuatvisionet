@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<record model="ir.ui.view" id="sale_target_form_view">
+			<field name="name">Sale Target</field>
+			<field name="model">saletarget.saletarget</field>
+			<field name="arch" type="xml">
+				<form>
+					<header>
+						<button name="send_mail" string="Send Email" class="oe_highlight" type="object" states="open,closed"/>
+						<button name="confirm" string="Confirm" class="oe_highlight" type="object" states="draft"/>
+						<button name="close" string="Close" class="oe_highlight" type="object" states="open"/>
+						<button name="cancel" string="Cancel" class="oe_highlight" type="object" states="open,closed"/>
+						<field name="state" widget="statusbar" statusbar_visible="draft,open,closed"/>
+					</header>
+					<sheet>
+						<div class="oe_title">
+							<h1>
+								<field name="name" readonly="1"/>
+							</h1>
+						</div>
+						<group>
+							<group>
+								<field name="sales_person_id" attrs="{'readonly':[('state','!=','draft')],'required':[('state', '=', 'draft')]}" />
+								<field name="start_date" attrs="{'readonly':[('state','!=','draft')],'required':[('state', '=', 'draft')]}"/>
+								<field name="end_date" attrs="{'readonly':[('state','!=','draft')],'required':[('state', '=', 'draft')]}"/>
+								<field name="target_achieve" attrs="{'readonly':[('state','!=','draft')],'invisible':[('achieve','=',0)]}"/>
+							</group>
+							<group>
+								<field name="target" attrs="{'readonly':[('state','!=','draft')],'required':[('state', '=', 'draft')]}"/>
+								<field name="difference" readonly="1"/>
+								<field name="achieve" readonly="1"/>
+								<field name="achieve_percentage" widget="progressbar" readonly="1"/>
+								<field name="partner_id" invisible="1"/>
+							</group>
+						</group>
+						<notebook>
+							<page string="Target Line" name="target_line">
+								<field name="target_line_ids" attrs="{'readonly':[('state','!=','draft')]}">
+									<tree editable='bottom'>
+										<field name="reverse_id" invisible='1'/>
+										<field name="product_id"/>
+										<field name="target_quantity"/>
+										<field name="achieve_quantity"/>
+										<field name="achieve_perc"  widget="progressbar"/>
+									</tree>
+								</field>
+							</page>
+						</notebook>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="sale_target_tree_view">
+			<field name="name">Sale Target</field>
+			<field name="model">saletarget.saletarget</field>
+			<field name="arch" type="xml">
+				<tree>
+					<field name="sales_person_id"/>
+					<field name="start_date"/>
+					<field name="end_date"/>
+					<field name="target"/>
+					<field name="difference"/>
+					<field name="achieve"/>
+					<field name="achieve_percentage"/>
+					<field name="state"/>
+				</tree>
+			</field>
+		</record>
+
+		<record id="sale_target_entry" model="ir.actions.act_window">
+			<field name="name">Sale Target</field>
+			<field name="res_model">saletarget.saletarget</field>
+			<field name="view_mode">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem name="Sales Target" id="sale_target_report" parent="sale.sale_order_menu" action="sale_target_entry"/>
+
+	</data>
+</odoo>

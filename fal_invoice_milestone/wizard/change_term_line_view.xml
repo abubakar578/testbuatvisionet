@@ -1,0 +1,28 @@
+<odoo>
+	<record id="fal_change_term_line_wizard" model="ir.ui.view">
+        <field name="name">change.term.line.wizard</field>
+        <field name="model">change.term.line.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Change Term Line">
+                <group>
+                    <group>
+                        <field name="date"/>
+                        <field name="invoice_forecast_date"/>
+                    </group>
+                </group>
+                <field name="fal_invoice_term_line_ids">
+                    <tree create="false">
+                        <field name="description"/>
+                        <field name="date"/>
+                        <field name="invoice_forecast_date"/>
+                    </tree>
+                </field>
+                <footer>
+                    <button name="change_term_line" string="Apply" type="object"
+                        class="btn-primary"/>
+                    <button string="Cancel" class="btn-default" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

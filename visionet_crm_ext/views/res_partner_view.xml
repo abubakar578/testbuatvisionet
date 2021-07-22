@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="action_contact_employee" model="ir.actions.act_window">
+            <field name="name">Employee</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">kanban,tree,form,activity</field>
+            <field name="search_view_id" ref="base.view_res_partner_filter"/>
+            <field name="context">{'default_is_company': True}</field>
+            <field name="domain">[('user_ids', '!=', False)]</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create an employee in your address book
+                </p>
+            </field>
+        </record>
+
+        <record id="view_contact_number_visionet" model="ir.ui.view">
+            <field name="name">view.contact.number.visionet</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="sms.res_partner_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='phone']" position="replace">
+                    <field name="phone"/>
+                </xpath>
+                <xpath expr="//field[@name='mobile']" position="replace">
+                    <field name="mobile"/>
+                </xpath>
+                <xpath expr="//form/sheet/group/group[2]/field[@name='email']" position="replace">
+                    <field name="email"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_contact_email_visionet" model="ir.ui.view">
+            <field name="name">view.contact.email.visionet</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="mail.res_partner_view_form_inherit_mail"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='email']" position="replace">
+                    <field name="email"/>
+                </xpath>
+            </field>
+        </record>
+
+
+        <record id="view_partner_form_visionet" model="ir.ui.view">
+            <field name="name">res.partner.form.visionet</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='misc']" position="inside">
+                    <field name="is_lippo_group"/>
+                </xpath>
+                <xpath expr="//form/sheet/notebook/page[@name='contact_addresses']/field[@name='child_ids']" position="attributes">
+                    <attribute name="context">{'default_type': 'contact'}</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <menuitem id="menu_employee_visionet"
+            name="Employee"
+            action="action_contact_employee"
+            parent="contacts.menu_contacts"
+            sequence="1"/>
+
+    </data>
+</odoo>

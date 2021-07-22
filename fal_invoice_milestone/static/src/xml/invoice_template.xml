@@ -1,0 +1,42 @@
+<templates>
+    <div t-name="fal_invoice_milestone.inv_policy">
+        <div t-if="widget.data.state === 'sale' ">
+            <a tabindex="0" class="fa fa-info-circle text-primary"/>
+        </div>
+    </div>
+
+    <div t-name="fal_invoice_milestone.InvPopOver">
+        <table>
+            <tbody>
+                <t t-if="data.term_id">
+                    <t t-if="data.invoiced">
+                        <tr>
+                            <td><strong>Fully Invoiced</strong></td>
+                        </tr>
+                    </t>
+                    <t t-else="">
+                        <tr>
+                            <td><strong>Invoices</strong>: <t t-esc='data.number_of_invoice'/><br /></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Next Invoice</strong>: <t t-esc='data.date'/></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Percentage</strong>: <t t-esc='data.percentage'/>%</td>
+                        </tr>
+                    </t>
+                </t>
+                <tr>
+                    <td><strong>Invoicing Policy</strong>: <t t-esc='data.invoice_policy'/></td>
+                </tr>
+            </tbody>
+        </table>
+        <div t-if="data.term_id">
+            <button class="text-left btn btn-link action_open_milestone"
+                type="button">
+                    <i class="fa fa-fw o_button_icon fa-arrow-right"></i>
+                    View Invoice Rule
+            </button>
+        </div>
+    </div>
+</templates>

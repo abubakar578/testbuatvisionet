@@ -1,0 +1,265 @@
+<odoo>
+    <record id="visionet_crm_view_form" model="ir.ui.view">
+        <field name="name">visionet.crm.view.form</field>
+        <field name="model">crm.lead</field>
+        <field name="type">form</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/header" position="replace">
+                <header>
+                    <field name="stage_id" widget="statusbar"
+                        options="{'fold_field': 'fold'}"
+                        domain="['|', ('team_id', '=', team_id), ('team_id', '=', False)]"
+                        attrs="{'invisible': [('active', '=', False)]}"/>
+                </header>
+            </xpath>
+            <xpath expr="//h1/field[@name='name']" position="attributes">
+                <attribute name="placeholder">Definition</attribute>
+            </xpath>
+            <xpath expr="//h2" position="inside">
+                <div class="col">
+                    <label for="prorated_revenue" class="oe_edit_only" />
+                    <div class="o_row">
+                        <field name="prorated_revenue" class="oe_inline" widget='monetary' options="{'currency_field': 'company_currency'}"/>
+                    </div>
+                </div>
+            </xpath>
+            <xpath expr="//form/sheet/group/group[4]/field[@name='date_deadline']" position="attributes">
+                <attribute name="required">1</attribute>
+            </xpath>
+            <xpath expr="//form/sheet/group/group[4]/field[@name='date_deadline']" position="before">
+                <h2 class="oe_grey" style="margin-bottom:15px"> Date Information </h2>
+            </xpath>
+            <xpath expr="//form/sheet/group/group[4]/field[@name='date_deadline']" position="after">
+                <field name="start_date" required="1"/>
+            </xpath>
+            <xpath expr="//group[@name='opportunity_partner']/field[@name='partner_id']" position="before">
+                <h2 class="oe_grey" style="margin-bottom:15px"> Customer Information </h2>
+            </xpath>
+            <xpath expr="//group[@name='opportunity_partner']/field[@name='partner_id']" position="attributes">
+                <attribute name="domain">[('is_employee', '=', False)]</attribute>
+                <attribute name="required">1</attribute>
+            </xpath>
+            <xpath expr="//group[@name='opportunity_partner']/field[@name='partner_id']" position="after">
+                <field name="end_user" domain="[('is_employee','=', False)]"/>
+            </xpath>
+
+            <xpath expr="//group[@name='opportunity_partner']/label[@for='email_from']" position="replace"/>
+            <xpath expr="//group[@name='opportunity_partner']/label[@for='phone']" position="replace"/>
+            <xpath expr="//group[@name='opportunity_partner']/div[hasclass('o_row')]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//group[@name='opportunity_partner']/div[hasclass('o_row')][2]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//group[@name='opportunity_partner']/field[@name='phone_state']" position="after">
+                <h2 class="oe_grey" style="margin:15px 0px"> Project Information </h2>
+                    <field name="product" options="{'no_create': True, 'no_edit': True, 'no_open': True}"/>
+                    <field name="vis_probability" required="1" string="Probability" widget="selection"/>
+                    <field name="stage_crm" required="1" options="{'no_create': True, 'no_edit': True, 'no_open': True}"/>
+                    <field name="project_id" options="{'no_create': True, 'no_edit': True, 'no_open': True}" attrs="{'invisible': [('vis_probability', '!=', 'c')]}"/>
+                    <button name="push_to_googlebq" type="object" string="Push to GoogleBQ" invisible="1"/>
+            </xpath>
+
+            <xpath expr="//sheet/group/group[4]/field[@name='priority']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//sheet/group/group[4]/field[@name='tag_ids']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//sheet/group/group[4]/field[@name='tag_ids']" position="after">
+                    <h2 class="oe_grey" style="margin:15px 0px"> Bill Information </h2>
+                    <field name="recuring"/>
+                    <field name="initial_value"/>
+                    <field name="contract_period" attrs="{'invisible': [('recuring', '=', False)]}"/>
+                    <field name="bill_period" attrs="{'invisible': [('recuring', '=', False)]}"/>
+                    <field name="remarks" attrs="{'readonly': [('recuring', '=', False)]}"/>
+                    <field name="invoice_term_id" invisible="1"/>
+                    <button name='compute_term' type="object" class="btn-secondary oe_edit_only" string="Recompute Revenue Table"/>
+            </xpath>
+            <xpath expr="//sheet/group/group[5]/field[@name='user_id']" position="before">
+                <h2 class="oe_grey" style="margin-bottom:15px"> Business Development </h2>
+            </xpath>
+            <xpath expr="//sheet/group/group[5]/field[@name='user_id']" position="attributes">
+                <attribute name="string">Business Representative</attribute>
+                <attribute name="required">1</attribute>
+                <attribute name="domain">[('id', 'in', sales_member_ids)]</attribute>
+                <attribute name="options">{'no_create': True, 'no_edit': True}</attribute>
+            </xpath>
+            <xpath expr="//sheet/group/group[5]/field[@name='team_id']" position="attributes">
+                <attribute name="string">Sales Department</attribute>
+            </xpath>
+            <xpath expr="//sheet/group/group[@name='lead_priority']" position="attributes">
+                <attribute name="attrs"></attribute>
+            </xpath>
+            <xpath expr="//sheet/group/group[@name='lead_priority']/field[@name='priority']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//sheet/group/group[@name='lead_priority']/field[@name='tag_ids']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//sheet/group/group[@name='lead_priority']/field[@name='priority']" position="before">
+                <h2 class="oe_grey" style="margin-bottom:15px"> Business Solution </h2>
+                <field name="presales" string="Presales Member" options="{'clickable': 0}" widget="many2one_avatar_user" domain="[('id', 'in', member_ids)]"/>
+                <field name="product_department" readonly="1" options="{'no_open': True}"/>
+                <field name="member_ids" invisible="1"/>
+                <field name="sales_member_ids" invisible="1"/>
+            </xpath>
+            <xpath expr="//notebook/page[@name='internal_notes']" position="before">
+                <page string="Revenue" name="term_line">
+                    <field name="term_line_ids" force_save="1">
+                        <tree editable="bottom">
+                            <field name="date"/>
+                            <field name="values"/>
+                            <field name="weighted_amount"/>
+                            <field name="remarks"/>
+                        </tree>
+                    </field>
+                    <group name="note_amount" col="6" class="mt-2 mt-md-0">
+                    <group class="oe_subtotal_footer oe_right" colspan="2" name="crm_total">
+                        <field name="amount_total" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                        <div class="oe_subtotal_footer_separator oe_inline o_td_label"/>
+                        <field name="total_weighted_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                        <div class="oe_subtotal_footer_separator oe_inline o_td_label"/>
+                    </group>
+                    <div class="oe_clear"/>
+                </group>
+                </page>
+            </xpath>
+            <xpath expr="//notebook/page[@name='internal_notes']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//notebook/page[@name='lead']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="visionet_crm_view_form_header" model="ir.ui.view">
+        <field name="name">visionet.crm.view.form.header</field>
+        <field name="model">crm.lead</field>
+        <field name="type">form</field>
+        <field name="inherit_id" ref="sale_crm.crm_case_form_view_oppor"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_view_sale_quotation']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="visionet_crm_team_view_form" model="ir.ui.view">
+        <field name="name">visionet.crm.team.view.form</field>
+        <field name="model">crm.team</field>
+        <field name="type">form</field>
+        <field name="inherit_id" ref="sales_team.crm_team_view_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//form/sheet/group/group[@name='left']" position='inside'>
+                    <field name="department_type"/>
+                </xpath>
+                <xpath expr="//group[@name='right']" position='inside'>
+                    <field name="parent_id"/>
+                </xpath>
+                <xpath expr="//div[@name='options_active']" position='attributes'>
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+    </record>
+
+    <record id="visionet_crm_team_view_form_page" model="ir.ui.view">
+        <field name="name">visionet.crm.team.view.form.page</field>
+        <field name="model">crm.team</field>
+        <field name="type">form</field>
+        <field name="inherit_id" ref="sales_team.crm_team_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[@name='members']" position='after'>
+                <page name="visionet_members" string="Members">
+                    <field name="team_member_ids" widget="many2many" options="{'not_delete': True}">
+                        <kanban quick_create="false" create="true" delete="true">
+                            <field name="id"/>
+                            <field name="name"/>
+                            <templates>
+                                <t t-name="kanban-box">
+                                    <div class="oe_kanban_global_click" style="max-width: 200px">
+                                        <div class="o_kanban_record_top">
+                                            <img t-att-src="kanban_image('res.users', 'image_128', record.id.raw_value)" class="oe_avatar oe_kanban_avatar_smallbox o_image_40_cover mb0" alt="Avatar"/>
+                                            <div class="o_kanban_record_headings ml8">
+                                                <strong class="o_kanban_record_title"><field name="name"/></strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                            </templates>
+                        </kanban>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="visionet_crm_list" model="ir.ui.view">
+        <field name="name">visionet.crm.list</field>
+        <field name="model">crm.lead</field>
+        <field name="type">tree</field>
+        <field name="inherit_id" ref="crm.crm_case_tree_view_oppor"/>
+            <field name="arch" type="xml">
+                <xpath expr="//tree" position='inside'>
+                    <field name="partner_id" optional="hide"/>
+                    <field name="presales" optional="hide"/>
+                    <field name="prorated_revenue" optional="hide"/>
+                    <field name="end_user" optional="hide"/>
+                    <field name="product" optional="hide"/>
+                    <field name="stage_crm" optional="hide"/>
+                    <field name="product_department" optional="hide"/>
+                    <field name="initial_value" optional="hide"/>
+                    <field name="contract_period" optional="hide"/>
+                    <field name="bill_period" optional="hide"/>
+                </xpath>
+            </field>
+    </record>
+
+    <record id="visionet_crm_view_kanban" model="ir.ui.view">
+        <field name="name">visionet.crm.view.kanban</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
+        <field name="arch" type="xml">
+            <xpath expr="//kanban" position="attributes">
+                <attribute name="records_draggable">0</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="sales_team.sales_team_config_action" model="ir.actions.act_window">
+        <field name="context">{'default_use_opportunities': False}</field>
+    </record>
+
+    <menuitem
+        id="visionet_product_catalog"
+        name="Products"
+        parent="crm.crm_menu_sales"
+        action="sale.product_template_action"
+        sequence="6"/>
+
+    <record model="ir.ui.menu" id="crm.crm_menu_report">
+      <field name="name">Visionet Reporting</field>
+      <field name="groups_id" eval="[(5, 0, 0), (4, ref('visionet_crm_ext.group_sales_department')), (4, ref('visionet_crm_ext.group_product_department'))]"/>
+    </record>
+
+    <record model="ir.ui.menu" id="crm.crm_activity_report_menu">
+      <field name="groups_id" eval="[(5, 0, 0), (4, ref('visionet_crm_ext.group_sales_department')), (4, ref('visionet_crm_ext.group_product_department'))]"/>
+    </record>
+
+    <!-- Invisible Sales & Invoicing -->
+    <record model="ir.ui.menu" id="sale.sale_menu_root">
+      <field name="groups_id" eval="[(5, 0, 0), (4, ref('base.group_no_one'))]"/>
+    </record>
+
+    <record model="ir.ui.menu" id="account.menu_finance">
+      <field name="groups_id" eval="[(5, 0, 0), (4, ref('base.group_no_one'))]"/>
+    </record>
+
+    <record model="ir.ui.menu" id="sale_crm.sale_order_menu_quotations_crm">
+      <field name="groups_id" eval="[(5, 0, 0), (4, ref('base.group_no_one'))]"/>
+    </record>
+
+</odoo>

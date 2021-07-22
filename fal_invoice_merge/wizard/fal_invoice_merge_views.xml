@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    <record id="fal_invoice_merge_form_view_wizard" model="ir.ui.view">
+        <field name="name">fal.invoice.merge.wizard</field>
+        <field name="model">fal.invoice.merge.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Merge Invoices">
+            	<p string="Are you sure you want to merge these invoices?" colspan="4" />
+                <p>
+                    Please note that:<br/><br/>
+                    Invoices will only be merged if:<br/>
+                    * Invoices are in state 'draft'.<br/>
+                    * Invoices belong to the same partner.<br/>
+                    * Invoices have the same company, currency.<br/><br/>
+                </p>
+                <group>
+                    <group>
+                        <field name="inv_action"/>
+                        <field name="invoice_date"/>
+                    </group>
+            	</group>
+                <footer>
+                    <button class="btn-primary" name="action_merge_invoice" type="object" string="Merge"/>
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="fal_invoice_merge_action" model="ir.actions.act_window">
+        <field name="name">Merge Invoices</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">fal.invoice.merge.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="fal_invoice_merge_form_view_wizard"/>
+        <field name="context">{}</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="account.model_account_move" />
+        <field name="binding_view_types">list</field>
+    </record>
+	</data>
+</odoo>
