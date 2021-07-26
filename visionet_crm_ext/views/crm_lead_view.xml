@@ -37,11 +37,12 @@
                 <h2 class="oe_grey" style="margin-bottom:15px"> Customer Information </h2>
             </xpath>
             <xpath expr="//group[@name='opportunity_partner']/field[@name='partner_id']" position="attributes">
-                <attribute name="domain">[('is_employee', '=', False)]</attribute>
+                <attribute name="domain">[('user_ids', '=', False)]</attribute>
                 <attribute name="required">1</attribute>
+                <attribute name="options">{'no_quick_create':True}</attribute>
             </xpath>
             <xpath expr="//group[@name='opportunity_partner']/field[@name='partner_id']" position="after">
-                <field name="end_user" domain="[('is_employee','=', False)]"/>
+                <field name="end_user" domain="[('user_ids','=', False)]" options="{'no_quick_create':True}"/>
             </xpath>
 
             <xpath expr="//group[@name='opportunity_partner']/label[@for='email_from']" position="replace"/>
@@ -89,6 +90,11 @@
             </xpath>
             <xpath expr="//sheet/group/group[5]/field[@name='team_id']" position="attributes">
                 <attribute name="string">Sales Department</attribute>
+                <attribute name="domain">[('department_type','=','sales department')]</attribute>
+                <attribute name="attrs">{'readonly': [('is_last_member', '=', True)]}</attribute>
+            </xpath>
+            <xpath expr="//sheet/group/group[5]/field[@name='team_id']" position="after">
+                <field name="is_last_member" invisible="1"/>
             </xpath>
             <xpath expr="//sheet/group/group[@name='lead_priority']" position="attributes">
                 <attribute name="attrs"></attribute>
@@ -172,6 +178,9 @@
         <field name="type">form</field>
         <field name="inherit_id" ref="sales_team.crm_team_view_form" />
         <field name="arch" type="xml">
+            <xpath expr="//notebook/page[@name='members']/field[@name='member_ids']" position='attributes'>
+                <attribute name="options">{'no_create': True}</attribute>
+            </xpath>
             <xpath expr="//notebook/page[@name='members']" position='after'>
                 <page name="visionet_members" string="Members">
                     <field name="team_member_ids" widget="many2many" options="{'not_delete': True}">

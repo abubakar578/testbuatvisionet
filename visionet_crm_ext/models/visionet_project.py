@@ -45,16 +45,13 @@ class VisionetTarget(models.Model):
     start_date = fields.Date(string='Start Date')
     end_date = fields.Date(string='End Date')
     target = fields.Integer(string="Target")
-    total_achievement = fields.Integer(string="Achievement", compute="_total_achievement")
+    total_achievement = fields.Integer(string="Achievement", compute='_total_achievement', store=True)
 
     def _total_achievement(self):
         for record in self:
             if record.target:
-                term_line_ids = self.env['fal.invoice.term.line'].search([
-                    ('rel_user_id', '=', record.user_id.id),
-                    ('date', '>=', record.start_date),
-                    ('date', '<=', record.end_date)], limit=1)
-                _logger.info(term_line_ids, "Term Line IDSsss")
+                domain = ['|', ('rel_user_id', '=', record.user_id.id), ('rel_presales', '=', record.user_id.id)]
+                term_line_ids = self.env['fal.invoice.term.line'].search(domain + [('date', '>=', record.start_date), ('date', '<=', record.end_date)])
                 amount = sum(term_line_id.weighted_amount for term_line_id in term_line_ids)
                 record.write({
                     'total_achievement': amount
