@@ -44,6 +44,7 @@ class CrmLead(models.Model):
     is_email_send = fields.Boolean(string='Send email after 30 days', default=False)
     is_email_send_2 = fields.Boolean(string='Send email after 60 days', default=False)
     is_email_cycle = fields.Boolean(string='Send email when Oppurtunity sale cycle turn to "Drop"', default=False)
+    is_last_member = fields.Boolean('Last Member', related='user_id.is_last_member')
 
     def send_mail(self, days):
         mailbody = ("""
@@ -218,7 +219,7 @@ class CrmLead(models.Model):
     def create(self, vals_list):
         res = super(CrmLead, self).create(vals_list)
         res._generate_milestone()
-        res.push_to_googlebq()
+        # res.push_to_googlebq()
         return res
 
     def compute_term(self):
