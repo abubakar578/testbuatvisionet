@@ -17,18 +17,11 @@ class FalInvoiceTermLine(models.Model):
     _description = 'Invoice Term Line'
 
     crm_id = fields.Many2one('crm.lead', string="CRM ID")
-    sales_target_id = fields.Many2one('visionet.target', string="Sales Target")
     values = fields.Float(string="Total Amount", store=True)
     remarks = fields.Char('Remark', size=100)
     percentage = fields.Float('Percentage (%)', tracking=True, required=False)
     weighted_amount = fields.Float(string='Weighted Amount', compute='_compute_weight_amount', readonly=True, store=True)
-    target_name_vis = fields.Char(string='Target Name', related='sales_target_id.name', readonly=True, store=True)
-    start_date_vis = fields.Date(string='Date Start Visionet', related='sales_target_id.start_date', readonly=True, store=True)
-    end_date_vis = fields.Date(string='Date End Visionet', related='sales_target_id.end_date', readonly=True, store=True)
-    target_vis = fields.Integer(string='Visionet Total Target', related='sales_target_id.target', readonly=True, store=True)
-
-
-    # field untuk pivot
+    # Field Pivot
     visionet_currency = fields.Many2one("res.currency", string='Currency', related='crm_id.company_currency', readonly=True)
     rel_name = fields.Char(string='Project Name', readonly=True, related='crm_id.name', store=True)
     rel_expected_revenue = fields.Monetary(string='Expected Revenue', currency_field='visionet_currency', readonly=True, related='crm_id.expected_revenue', store=True)
@@ -39,7 +32,7 @@ class FalInvoiceTermLine(models.Model):
     rel_date_deadline = fields.Date(string='Date Deadline', related='crm_id.date_deadline', readonly=True, store=True)
     rel_start_date = fields.Date(string='Date Start', related='crm_id.start_date', readonly=True, store=True)
     rel_product = fields.Many2one('product.template', string='Product', related='crm_id.product', readonly=True, store=True)
-    rel_vis_probability = fields.Selection(string='vis Probability', related='crm_id.vis_probability', readonly=True, store=True)
+    rel_vis_probability = fields.Selection(string='Vis Probability', related='crm_id.vis_probability', readonly=True, store=True)
     rel_stage_crm = fields.Many2one('crm.stage', string='CRM stage', related='crm_id.stage_crm', readonly=True, store=True)
     rel_project_id = fields.Many2one('visionet.project', string='Project ID', related='crm_id.project_id', readonly=True, store=True)
     rel_recuring = fields.Boolean(string='Checkbox', related='crm_id.recuring', readonly=True, store=True)

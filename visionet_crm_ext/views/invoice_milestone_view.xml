@@ -25,6 +25,8 @@
                     <field name="rel_team_id"/>
                     <field name="rel_presales"/> 
                     <field name="rel_product_department"/>
+                    <field name="values" invisible="1"/>
+                    <field name="product_id" invisible="1"/>
                 </pivot>
             </field>
         </record>

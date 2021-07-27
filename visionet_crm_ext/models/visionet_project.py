@@ -28,7 +28,6 @@ class VisionetProject(models.Model):
         query = """
             SELECT ProjectID
             FROM `pdashboard-295910.SalesPipeline.ProjectIDDev`
-            LIMIT 20
         """
         query_job = client.query(query)
         for row in query_job:
@@ -47,6 +46,9 @@ class VisionetTarget(models.Model):
     target = fields.Integer(string="Target")
     total_achievement = fields.Integer(string="Achievement", compute='_total_achievement', store=True)
 
+    @api.depends('user_id.invoice_term_line_ids', 'user_id.invoice_term_line_ids.weighted_amount',
+        'user_id.invoice_term_line_ids.rel_user_id', 'user_id.invoice_term_line_ids.rel_presales',
+        'user_id.invoice_term_line_ids.date', 'user_id', 'start_date', 'end_date', 'target')
     def _total_achievement(self):
         for record in self:
             if record.target:
@@ -56,3 +58,13 @@ class VisionetTarget(models.Model):
                 record.write({
                     'total_achievement': amount
                 })
+
+    def push_to_googlebq(self):
+        for target in self:
+            client = bigquery.Client(project="pdashboard-295910", credentials=credentials)
+
+            update_query = """
+                INSERT INTO `pdashboard-295910.SalesPipeline.SalesTargetDev` (Name, TargetId, StartDate, EndDate, Target) VALUES ('%s', %s, '%s', '%s', %s)
+            """ % (target.user_id.name or '', target.id, target.start_date.strftime('%Y-%m-%d'), target.end_date.strftime('%Y-%m-%d'), target.target or 0)
+            _logger.info(update_query, "THIS INSert into")
+            client.query(update_query)

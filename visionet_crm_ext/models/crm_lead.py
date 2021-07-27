@@ -1,7 +1,8 @@
 import logging
 from odoo import models, api, fields, _
 from odoo.exceptions import UserError, ValidationError
-
+from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
 from google.cloud import bigquery
 from google.oauth2 import service_account
 
@@ -33,6 +34,7 @@ class CrmLead(models.Model):
     presales = fields.Many2one('res.users', index=True, tracking=True, default=False, required=True)
     date_deadline = fields.Date('Expected Closing', tracking=True, help="Estimate of the date on which the opportunity will be won.")
     term_line_ids = fields.One2many('fal.invoice.term.line', 'crm_id', string="Term Line", tracking=True)
+    is_last_member = fields.Boolean('Last Member', related='user_id.is_last_member')
     invoice_term_id = fields.Many2one('fal.invoice.term', string="Invoice Template")
     vis_probability = fields.Selection([
             ('l', 'L'),
@@ -41,63 +43,32 @@ class CrmLead(models.Model):
             ('c', 'C'),
             ('d', 'D'),
         ], default='l', tracking=True)
-    is_email_send = fields.Boolean(string='Send email after 30 days', default=False)
-    is_email_send_2 = fields.Boolean(string='Send email after 60 days', default=False)
-    is_email_cycle = fields.Boolean(string='Send email when Oppurtunity sale cycle turn to "Drop"', default=False)
-    is_last_member = fields.Boolean('Last Member', related='user_id.is_last_member')
+    is_email_send = fields.Boolean(string='Send email after 30 days', default=False, compute="overdue_thirty", store=True)
+    is_email_send_2 = fields.Boolean(string='Send email after 60 days', default=False, compute="overdue_sixty", store=True)
 
-    def send_mail(self, days):
-        mailbody = ("""
-            <p>Dengan ini kami memberitahukan bahwa oppurtunity anda yang dibuat pada</p>
-            <p> Tanggal : <b>""" + str(self.date_deadline) + """</b></p>
-            <p> Sudah Melebihi waktu <b>""" + days + """</b> hari dari tanggal Expected Closing</p>
-            <p> Mohon Memperbarui Oppurtunity Anda </p>
-            """)
-
-        mail = self.env['mail.mail'].create({
-            'subject': ('Pemberitahuan Notifikasi'),
-            'email_from': "Odoo Admin",
-            'email_to':   self.product_department and self.product_department.user_id and self.product_department.user_id.email or '', self.team_id and self.team_id.user_id and self.team_id.user_id.email or ''
-            'body_html': mailbody,
-        }).send()
-
-    def send_mail_state(self):
-        name = self._context.get('name')
-        mailbody = ("""
-            <p>Salah satu Oppurtunity anda yang bernama : <b>"""
-            + str(self.name) + """
-            </b> </p> <p> Telah di Drop. </p> 
-            <p> Check kembali Oppurtunity anda </p>
-            """)
-
-        mail = self.env['mail.mail'].create({
-            'subject': ('Drop Notification'),
-            'email_from': "Odoo Admin",
-            'email_to':   "self.product_department" and "self.product_department.user_id" and "self.product_department.user_id.email" or '',
-            "self.team_id" and "self.team_id.user_id" and "self.team_id.user_id.email" or ''
-            'body_html': mailbody,
-        }).send()
-
-    def automatic_send_email_overdue(self):
+    @api.depends('date_deadline')
+    def overdue_thirty(self):
         record = self.search([('active' ,'=', True)])
         for lead in record:
-            if lead.vis_probability != 'C' or lead.vis_probability != 'D':
-                if lead.date_deadline:
-                    after_date1 = (datetime.strptime(str(lead.date_deadline), '%Y-%m-%d') + relativedelta(days = 30))
-                    after_date2 = (datetime.strptime(str(lead.date_deadline), '%Y-%m-%d') + relativedelta(days = 60))
-                    if datetime.now() >= after_date1 and lead.is_email_send == False:
-                        lead.send_mail("30")
-                        lead.is_email_send = True
-                    elif datetime.now() >= after_date2 and lead.is_email_send_2 == False:
-                        lead.send_mail("60")
-                        lead.is_email_send_2 = True
+            if lead.date_deadline:
+                after_date1 = (datetime.strptime(str(lead.date_deadline), '%Y-%m-%d') + relativedelta(days = 30))
+                after_date2 = (datetime.strptime(str(lead.date_deadline), '%Y-%m-%d') + relativedelta(days = 60))
+                if datetime.now() >= after_date1 and lead.is_email_send == False:
+                    lead.is_email_send = True
+                elif datetime.now() <= after_date1:
+                    lead.is_email_send = False
 
-    def automatic_send_email_drop(self):
+    @api.depends('date_deadline')
+    def overdue_sixty(self):
         record = self.search([('active' ,'=', True)])
         for lead in record:
-            if lead.stage_crm.id == 5 and lead.is_email_cycle == False:
-                lead.send_mail_state()
-                lead.is_email_cycle = True
+            if lead.date_deadline:
+                after_date1 = (datetime.strptime(str(lead.date_deadline), '%Y-%m-%d') + relativedelta(days = 30))
+                after_date2 = (datetime.strptime(str(lead.date_deadline), '%Y-%m-%d') + relativedelta(days = 60))
+                if datetime.now() >= after_date2 and lead.is_email_send_2 == False:
+                    lead.is_email_send_2 = True
+                elif datetime.now() <= after_date2:
+                    lead.is_email_send_2 = False
 
     @api.constrains('date_deadline', 'start_date')
     def _check_date_crm(self):
@@ -219,7 +190,7 @@ class CrmLead(models.Model):
     def create(self, vals_list):
         res = super(CrmLead, self).create(vals_list)
         res._generate_milestone()
-        # res.push_to_googlebq()
+        res.push_to_googlebq()
         return res
 
     def compute_term(self):

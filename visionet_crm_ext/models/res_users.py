@@ -10,7 +10,7 @@ class ResUsers(models.Model):
 
     team_member_ids = fields.Many2many('res.users', 'res_users_2_rel', 'sales_person', string='Members', compute='_get_member')
     total_target = fields.Monetary(string='Total', store=True, compute='_total_target')
-    visionet_target_ids = fields.One2many('visionet.target', 'user_id')
+    visionet_target_ids = fields.One2many('visionet.target', 'user_id', string="Visionet Target(s)")
     is_last_member =  fields.Boolean(string="Is last member?", compute='_get_member')
     invoice_term_line_ids = fields.One2many('fal.invoice.term.line', 'rel_user_id', string="Invoice Term Line(s)")
 
@@ -45,3 +45,8 @@ class ResUsers(models.Model):
                 user.is_last_member = True
                 team = team_obj.with_user(admin).search([('member_ids', '=', user.id)], limit=1)
                 user.team_member_ids = [(6, 0, team.member_ids.ids)]
+
+    def action_query(self):
+        for user in self:
+            for target in user.visionet_target_ids:
+                target.push_to_googlebq()

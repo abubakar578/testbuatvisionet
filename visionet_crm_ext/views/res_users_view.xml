@@ -6,16 +6,19 @@
             <field name="model">res.users</field>
             <field name="inherit_id" ref="base.view_users_simple_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//group[@name='phone_numbers']/field[@name='mobile']" position="after">
-                    <field name="visionet_target_ids">
-                        <tree editable="bottom">
-                            <field name="start_date"/>
-                            <field name="end_date"/>
-                            <field name="target"/>
-                            <field name="total_achievement"/>
-                        </tree>
-                    </field>
-                    <field name="total_target" widget="monetary"/>
+                <xpath expr="//group[@name='phone_numbers']" position="after">
+                    <group name="sales_target">
+                        <field name="visionet_target_ids">
+                            <tree editable="bottom">
+                                <field name="start_date"/>
+                                <field name="end_date"/>
+                                <field name="target"/>
+                                <field name="total_achievement"/>
+                            </tree>
+                        </field>
+                        <field name="total_target" widget="monetary"/>
+                    </group>
+                    <button name="action_query" type="object" class="btn-secondary oe_edit_only" string="Push to GoogleBQ"/>
                 </xpath>
             </field>
         </record>
