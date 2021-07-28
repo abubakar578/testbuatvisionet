@@ -97,18 +97,22 @@ class VisionetTarget(models.Model):
             return False
 
     def clean_googlebq(self):
-        for target in self:
-            client = bigquery.Client(project="pdashboard-295910", credentials=credentials)
-            select = """
-                SELECT TargetId FROM `pdashboard-295910.SalesPipeline.SalesTargetDev`
-            """
-            query_res_list = client.query(select)
-            for query_res in query_res_list:
-                if not query_res[0] or not self.search([('id', '=', query_res[0])]):
-                    delete = """
-                        DELETE FROM `pdashboard-295910.SalesPipeline.SalesTargetDev` WHERE TargetId = %s
-                    """ % (query_res[0])
-                    client.query(delete)
+        client = bigquery.Client(project="pdashboard-295910", credentials=credentials)
+        delete = """
+            DELETE FROM `pdashboard-295910.SalesPipeline.SalesTargetDev` WHERE TargetId IS NULL
+        """
+        client.query(delete)
+
+        select = """
+            SELECT TargetId FROM `pdashboard-295910.SalesPipeline.SalesTargetDev`
+        """
+        query_res_list = client.query(select)
+        for query_res in query_res_list:
+            if not self.search([('id', '=', query_res[0])]):
+                delete = """
+                    DELETE FROM `pdashboard-295910.SalesPipeline.SalesTargetDev` WHERE TargetId = %s
+                """ % (query_res[0])
+                client.query(delete)
 
     def synchronize_sales_target_googlebq(self):
         admin = self.env.ref('base.user_admin')

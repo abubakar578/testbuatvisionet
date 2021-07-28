@@ -91,18 +91,22 @@ class FalInvoiceTermLine(models.Model):
             return False
 
     def clean_googlebq(self):
-        for milestone in self:
-            client = bigquery.Client(project="pdashboard-295910", credentials=credentials)
-            select = """
-                SELECT RevenueID FROM `pdashboard-295910.SalesPipeline.PipelineOdooDev`
-            """
-            query_res_list = client.query(select)
-            for query_res in query_res_list:
-                if not self.search([('id', '=', query_res[0])]):
-                    delete = """
-                        DELETE FROM `pdashboard-295910.SalesPipeline.PipelineOdooDev` WHERE RevenueID = %s
-                    """ % (query_res[0])
-                    client.query(delete)
+        client = bigquery.Client(project="pdashboard-295910", credentials=credentials)
+        delete = """
+            DELETE FROM `pdashboard-295910.SalesPipeline.PipelineOdooDev` WHERE RevenueID IS NULL
+        """
+        client.query(delete)
+
+        select = """
+            SELECT RevenueID FROM `pdashboard-295910.SalesPipeline.PipelineOdooDev`
+        """
+        query_res_list = client.query(select)
+        for query_res in query_res_list:
+            if not self.search([('id', '=', query_res[0])]):
+                delete = """
+                    DELETE FROM `pdashboard-295910.SalesPipeline.PipelineOdooDev` WHERE RevenueID = %s
+                """ % (query_res[0])
+                client.query(delete)
 
     def synchronize_to_googlebq(self):
         admin = self.env.ref('base.user_admin')
