@@ -104,7 +104,7 @@ class VisionetTarget(models.Model):
             """
             query_res_list = client.query(select)
             for query_res in query_res_list:
-                if not self.search([('id', '=', query_res[0])]):
+                if not query_res[0] or not self.search([('id', '=', query_res[0])]):
                     delete = """
                         DELETE FROM `pdashboard-295910.SalesPipeline.SalesTargetDev` WHERE TargetId = %s
                     """ % (query_res[0])
