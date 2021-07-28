@@ -66,7 +66,7 @@ class VisionetTarget(models.Model):
 
             insert_query = """
                 INSERT INTO `pdashboard-295910.SalesPipeline.SalesTargetDev` (Name, TargetId, StartDate, EndDate, Target) VALUES ('%s', %s, '%s', '%s', %s)
-            """ % (target.user_id.name or '', target.id, target.start_date.strftime('%Y-%m-%d'), target.end_date.strftime('%Y-%m-%d'), target.target or 0)
+            """ % (target.user_id.name or '', target.id, target.start_date and target.start_date.strftime('%Y-%m-%d') or '1999-01-01', target.end_date and target.end_date.strftime('%Y-%m-%d') or '1999-01-01', target.target or 0)
             client.query(insert_query)
 
     def remove_googlebq(self):
