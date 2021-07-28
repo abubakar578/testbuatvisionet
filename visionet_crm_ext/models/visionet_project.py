@@ -82,7 +82,7 @@ class VisionetTarget(models.Model):
             client = bigquery.Client(project="pdashboard-295910", credentials=credentials)
             update = """
                 UPDATE `pdashboard-295910.SalesPipeline.PipelineOdooDev` SET Name = '%s', StartDate = '%s', EndDate = '%s', Target = %s WHERE TargetId = %s
-            """ % (target.user_id.name, target.id, target.start_date and target.start_date.strftime('%Y-%m-%d') or '1999-01-01', target.start_date and target.start_date.strftime('%Y-%m-%d') or '1999-01-01', target.target or 0, target.id)
+            """ % (target.user_id.name, target.start_date and target.start_date.strftime('%Y-%m-%d') or '1999-01-01', target.end_date and target.end_date.strftime('%Y-%m-%d') or '1999-01-01', target.target or 0, target.id)
             client.query(update)
 
     def read_googlebq(self):
