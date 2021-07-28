@@ -114,9 +114,8 @@ class VisionetTarget(models.Model):
         admin = self.env.ref('base.user_admin')
         for target in self.with_user(admin).search([]).filtered(lambda x: not x.last_synchronize or x.last_synchronize < x.write_date):
             if target.user_id:
-                target.read_googlebq()
                 target.remove_googlebq()
-                target.insert_to_googlebq()
+                target.insert_googlebq()
             else:
                 target.remove_googlebq()
-                target.last_synchronize = fields.Datetime.now()
+            target.last_synchronize = fields.Datetime.now()
