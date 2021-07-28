@@ -113,7 +113,7 @@ class VisionetTarget(models.Model):
     def synchronize_sales_target_googlebq(self):
         admin = self.env.ref('base.user_admin')
         for target in self.with_user(admin).search([]).filtered(lambda x: not x.last_synchronize or x.last_synchronize < x.write_date):
-            if target.crm_id:
+            if target.user_id:
                 if target.read_googlebq():
                     target.update_googlebq()
                 else:
