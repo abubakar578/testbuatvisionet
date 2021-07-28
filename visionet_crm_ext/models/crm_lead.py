@@ -190,7 +190,6 @@ class CrmLead(models.Model):
     def create(self, vals_list):
         res = super(CrmLead, self).create(vals_list)
         res._generate_milestone()
-        res.push_to_googlebq()
         return res
 
     def compute_term(self):
