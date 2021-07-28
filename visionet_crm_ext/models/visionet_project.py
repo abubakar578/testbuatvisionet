@@ -113,7 +113,7 @@ class VisionetTarget(models.Model):
     def synchronize_to_googlebq(self):
         admin = self.env.ref('base.user_admin')
         for target in self.with_user(admin).search([]).filtered(lambda x: not x.last_synchronize or x.last_synchronize < x.write_date):
-            if target.user_id:
+            if target.read_googlebq():
                 target.remove_googlebq()
                 target.insert_to_googlebq()
             else:
