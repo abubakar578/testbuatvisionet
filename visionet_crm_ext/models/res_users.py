@@ -10,8 +10,8 @@ class ResUsers(models.Model):
 
     team_member_ids = fields.Many2many('res.users', 'res_users_2_rel', 'sales_person', string='Members', compute='_get_member')
     total_target = fields.Monetary(string='Total', store=True, compute='_total_target')
-    user_department = fields.Selection(related='sale_team_id.department_type')
     visionet_target_ids = fields.One2many('visionet.target', 'user_id', string="Visionet Target(s)")
+    user_department = fields.Selection(related='sale_team_id.department_type')
     is_last_member =  fields.Boolean(string="Is last member?", compute='_get_member')
     invoice_term_line_ids = fields.One2many('fal.invoice.term.line', 'rel_user_id', string="Invoice Term Line(s)")
 
@@ -48,6 +48,5 @@ class ResUsers(models.Model):
                 user.team_member_ids = [(6, 0, team.member_ids.ids)]
 
     def action_query(self):
-        for user in self:
-            for target in user.visionet_target_ids:
-                target.insert_to_googlebq()
+        for target in self.visionet_target_ids:
+            target.synchronize_to_googlebq()

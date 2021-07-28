@@ -81,8 +81,8 @@ class VisionetTarget(models.Model):
         for target in self:
             client = bigquery.Client(project="pdashboard-295910", credentials=credentials)
             update = """
-                UPDATE `pdashboard-295910.SalesPipeline.SalesTargetDev` SET Name = '%s', StartDate = '%s', EndDate = '%s', Target = %s WHERE TargetId = %s
-            """ % (target.user_id.name or '', target.start_date.strftime('%Y-%m-%d'), target.end_date.strftime('%Y-%m-%d'), target.target or 0)
+                UPDATE `pdashboard-295910.SalesPipeline.PipelineOdooDev` SET Name = '%s', StartDate = '%s', EndDate = '%s', Target = %s WHERE TargetId = %s
+            """ % (target.user_id.name, target.start_date.strftime('%Y-%m-%d'), target.end_date.strftime('%Y-%m-%d'), target.target or 0, target.id)
             client.query(update)
 
     def read_googlebq(self):
@@ -114,8 +114,9 @@ class VisionetTarget(models.Model):
         admin = self.env.ref('base.user_admin')
         for target in self.with_user(admin).search([]).filtered(lambda x: not x.last_synchronize or x.last_synchronize < x.write_date):
             if target.user_id:
-                if target.read_googlebq():
-                    target.update_googlebq()
+                target.read_googlebq()
+                target.remove_googlebq()
+                target.insert_to_googlebq()
             else:
                 target.remove_googlebq()
-            target.last_synchronize = fields.Datetime.now()
+                target.last_synchronize = fields.Datetime.now()
