@@ -10,6 +10,7 @@ class ResUsers(models.Model):
 
     team_member_ids = fields.Many2many('res.users', 'res_users_2_rel', 'sales_person', string='Members', compute='_get_member')
     total_target = fields.Monetary(string='Total', store=True, compute='_total_target')
+    user_department = fields.Selection(related='sale_team_id.department_type')
     visionet_target_ids = fields.One2many('visionet.target', 'user_id', string="Visionet Target(s)")
     is_last_member =  fields.Boolean(string="Is last member?", compute='_get_member')
     invoice_term_line_ids = fields.One2many('fal.invoice.term.line', 'rel_user_id', string="Invoice Term Line(s)")

@@ -6,6 +6,9 @@
             <field name="model">res.users</field>
             <field name="inherit_id" ref="base.view_users_simple_form"/>
             <field name="arch" type="xml">
+                <xpath expr="//group[@name='phone_numbers']" position="inside">
+                    <field name="user_department" string="Department Type"/>
+                </xpath>
                 <xpath expr="//group[@name='phone_numbers']" position="after">
                     <group name="sales_target">
                         <field name="visionet_target_ids">
