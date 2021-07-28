@@ -117,4 +117,4 @@ class VisionetTarget(models.Model):
                 if target.read_googlebq():
                     target.update_googlebq()
                 else:
-                    target.insert_googlebq()
+                    target.insert_to_googlebq()
