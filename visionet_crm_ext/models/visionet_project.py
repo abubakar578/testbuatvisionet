@@ -110,10 +110,10 @@ class VisionetTarget(models.Model):
                     """ % (query_res[0])
                     client.query(delete)
 
-    def synchronize_to_googlebq(self):
+    def synchronize_sales_target_googlebq(self):
         admin = self.env.ref('base.user_admin')
         for target in self.with_user(admin).search([]).filtered(lambda x: not x.last_synchronize or x.last_synchronize < x.write_date):
-            if target.user_id:
+            if target.crm_id:
                 if target.read_googlebq():
                     target.update_googlebq()
                 else:
@@ -121,4 +121,3 @@ class VisionetTarget(models.Model):
             else:
                 target.remove_googlebq()
             target.last_synchronize = fields.Datetime.now()
-

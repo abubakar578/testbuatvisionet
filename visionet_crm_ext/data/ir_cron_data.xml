@@ -11,14 +11,14 @@
            <field name="code">model.synchronize_to_googlebq()</field>
         </record>
 
-        <record model="ir.cron" id="synchronize_sales_target_googlebq">
+        <record model="ir.cron" id="synchronize_googlebq_sales_target">
            <field name="name">Run Sales Target Synch</field>
            <field name="interval_number">30</field>
            <field name="interval_type">days</field>
            <field name="numbercall">-1</field>
            <field name="model_id" ref="model_visionet_target"/>
            <field name="state">code</field>
-           <field name="code">model.clean_googlebq()</field>
+           <field name="code">model.synchronize_sales_target_googlebq()</field>
         </record>
     </data>
 </odoo>
