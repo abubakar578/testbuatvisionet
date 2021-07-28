@@ -45,6 +45,7 @@ class VisionetTarget(models.Model):
     end_date = fields.Date(string='End Date')
     target = fields.Integer(string="Target")
     total_achievement = fields.Integer(string="Achievement", compute='_total_achievement', store=True)
+    last_synchronize = fields.Datetime('')
 
     @api.depends('user_id.invoice_term_line_ids', 'user_id.invoice_term_line_ids.weighted_amount',
         'user_id.invoice_term_line_ids.rel_user_id', 'user_id.invoice_term_line_ids.rel_presales',
@@ -59,12 +60,62 @@ class VisionetTarget(models.Model):
                     'total_achievement': amount
                 })
 
-    def push_to_googlebq(self):
+    def insert_to_googlebq(self):
         for target in self:
             client = bigquery.Client(project="pdashboard-295910", credentials=credentials)
 
-            update_query = """
+            insert_query = """
                 INSERT INTO `pdashboard-295910.SalesPipeline.SalesTargetDev` (Name, TargetId, StartDate, EndDate, Target) VALUES ('%s', %s, '%s', '%s', %s)
             """ % (target.user_id.name or '', target.id, target.start_date.strftime('%Y-%m-%d'), target.end_date.strftime('%Y-%m-%d'), target.target or 0)
-            _logger.info(update_query, "THIS INSert into")
-            client.query(update_query)
+            client.query(insert_query)
+
+    def remove_googlebq(self):
+        for target in self:
+            client = bigquery.Client(project="pdashboard-295910", credentials=credentials)
+            delete = """
+                DELETE FROM `pdashboard-295910.SalesPipeline.SalesTargetDev` WHERE TargetId = %s
+            """ % (target.id)
+            client.query(delete)
+
+    def update_googlebq(self):
+        for target in self:
+            client = bigquery.Client(project="pdashboard-295910", credentials=credentials)
+            update = """
+                UPDATE `pdashboard-295910.SalesPipeline.SalesTargetDev` SET Name = '%s', StartDate = '%s', EndDate = '%s', Target = %s WHERE TargetId = %s
+            """ % (target.user_id.name or '', target.start_date.strftime('%Y-%m-%d'), target.end_date.strftime('%Y-%m-%d'), target.target or 0)
+            client.query(update)
+
+    def read_googlebq(self):
+        for target in self:
+            client = bigquery.Client(project="pdashboard-295910", credentials=credentials)
+            select = """
+                SELECT TargetId FROM `pdashboard-295910.SalesPipeline.SalesTargetDev` WHERE TargetId = %s
+            """ % (target.id)
+            query_res_list = client.query(select)
+            for query_res in query_res_list:
+                return True
+            return False
+
+    def clean_googlebq(self):
+        for target in self:
+            client = bigquery.Client(project="pdashboard-295910", credentials=credentials)
+            select = """
+                SELECT TargetId FROM `pdashboard-295910.SalesPipeline.SalesTargetDev`
+            """
+            query_res_list = client.query(select)
+            for query_res in query_res_list:
+                if not self.search([('id', '=', query_res[0])]):
+                    delete = """
+                        DELETE FROM `pdashboard-295910.SalesPipeline.SalesTargetDev` WHERE TargetId = %s
+                    """ % (query_res[0])
+                    client.query(delete)
+
+    def synchronize_to_googlebq(self):
+        admin = self.env.ref('base.user_admin')
+        for target in self.with_user(admin).search([]).filtered(lambda x: not x.last_synchronize or x.last_synchronize < x.write_date):
+            if target.user_id:
+                if target.read_googlebq():
+                    target.update_googlebq()
+            else:
+                target.remove_googlebq()
+            target.last_synchronize = fields.Datetime.now()

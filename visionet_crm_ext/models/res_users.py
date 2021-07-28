@@ -49,4 +49,4 @@ class ResUsers(models.Model):
     def action_query(self):
         for user in self:
             for target in user.visionet_target_ids:
-                target.push_to_googlebq()
+                target.insert_to_googlebq()
