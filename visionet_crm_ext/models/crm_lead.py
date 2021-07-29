@@ -50,25 +50,27 @@ class CrmLead(models.Model):
     def overdue_thirty(self):
         record = self.search([('active' ,'=', True)])
         for lead in record:
-            if lead.date_deadline:
-                after_date1 = (datetime.strptime(str(lead.date_deadline), '%Y-%m-%d') + relativedelta(days = 30))
-                after_date2 = (datetime.strptime(str(lead.date_deadline), '%Y-%m-%d') + relativedelta(days = 60))
-                if datetime.now() >= after_date1 and lead.is_email_send == False:
-                    lead.is_email_send = True
-                elif datetime.now() <= after_date1:
-                    lead.is_email_send = False
+            if lead.vis_probability != 'C' or lead.vis_probability != 'D':
+                if lead.date_deadline:
+                    after_date1 = (datetime.strptime(str(lead.date_deadline), '%Y-%m-%d') + relativedelta(months =+ 1))
+                    after_date2 = (datetime.strptime(str(lead.date_deadline), '%Y-%m-%d') + relativedelta(months =+ 2))
+                    if datetime.now() == after_date1 and lead.is_email_send == False:
+                        lead.is_email_send = True
+                    else:
+                        lead.is_email_send = False
 
     @api.depends('date_deadline')
     def overdue_sixty(self):
         record = self.search([('active' ,'=', True)])
         for lead in record:
-            if lead.date_deadline:
-                after_date1 = (datetime.strptime(str(lead.date_deadline), '%Y-%m-%d') + relativedelta(days = 30))
-                after_date2 = (datetime.strptime(str(lead.date_deadline), '%Y-%m-%d') + relativedelta(days = 60))
-                if datetime.now() >= after_date2 and lead.is_email_send_2 == False:
-                    lead.is_email_send_2 = True
-                elif datetime.now() <= after_date2:
-                    lead.is_email_send_2 = False
+            if lead.vis_probability != 'C' or lead.vis_probability != 'D':
+                if lead.date_deadline:
+                    after_date1 = (datetime.strptime(str(lead.date_deadline), '%Y-%m-%d') + relativedelta(months =+ 1))
+                    after_date2 = (datetime.strptime(str(lead.date_deadline), '%Y-%m-%d') + relativedelta(months =+ 2))
+                    if datetime.now() == after_date2 and lead.is_email_send_2 == False:
+                        lead.is_email_send_2 = True
+                    else:
+                        lead.is_email_send_2 = False
 
     @api.constrains('date_deadline', 'start_date')
     def _check_date_crm(self):
